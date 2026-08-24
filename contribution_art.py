@@ -124,6 +124,11 @@ def reset_art_commits(repo_path):
         return
     subprocess.run(["git", "reset", "--hard", base_sha], cwd=repo_path, capture_output=True)
     print(f"\nReset to {base_sha[:7]} — all 'art:' commits removed.")
+    print("This only rewrites local history. If the art commits were ever")
+    print("pushed, `git push --force origin main` will clean up the repo but")
+    print("will NOT undo the contribution graph — GitHub keeps counting them")
+    print("once pushed. The only confirmed fix is deleting and recreating")
+    print("the GitHub repository, then pushing this history back to it.")
 
 def generate_commits(grid, repo_path, commits_per_day):
     # Calculate the Sunday-aligned start date
@@ -164,6 +169,10 @@ def main():
         subprocess.run(["git", "add", "commit.txt"], cwd=repo_path, capture_output=True)
         subprocess.run(["git", "commit", "-m", "initial commit"], cwd=repo_path, capture_output=True)
         print("  Done. Re-add your remote: git remote add origin <your-repo-url>")
+        print("  Note: force-pushing this to an existing GitHub repo will NOT")
+        print("  undo the contribution graph for any art commits already")
+        print("  counted. If art was ever pushed, delete and recreate the")
+        print("  GitHub repository instead, then push this history to it.")
         return
 
     # Drop all generated "art: " commits and stop; skip everything else
